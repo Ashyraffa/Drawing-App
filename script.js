@@ -46,7 +46,7 @@ function restoreState(state) {
 function drawCircle(x, y) {
     ctx.beginPath();
     ctx.arc(x, y, size, 0, Math.PI * 2);
-    ctx.fillStyle = isEraser ? '#FFFFFF' : color;
+    ctx.fillStyle = isEraser ? '#F5F5F5' : color;
     ctx.fill();
 }
 
@@ -54,7 +54,7 @@ function drawLine(x1, y1, x2, y2) {
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
-    ctx.strokeStyle = isEraser ? '#FFFFFF' : color;
+    ctx.strokeStyle = isEraser ? '#F5F5F5' : color;
     ctx.lineWidth = size * 2;
     ctx.stroke();
 }
