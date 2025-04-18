@@ -64,9 +64,41 @@ function updateSizeOnScreen() {
     sizeEl.innerText = size;
 }
 
+function adjustCanvasResolution() {
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width;
+    canvas.height = rect.height;
+    ctx.scale(rect.width / canvas.width, rect.height / canvas.height);
+}
+
+adjustCanvasResolution();
+window.addEventListener('resize', adjustCanvasResolution);
+
+function saveState() {
+    undoStack.push(canvas.toDataURL());
+    redoStack = [];
+}
+
 // Event listeners for mouse
+function getMousePos(e) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+    };
+}
+
+function getTouchPos(touch) {
+    const rect = canvas.getBoundingClientRect();
+    return {
+        x: touch.clientX - rect.left,
+        y: touch.clientY - rect.top
+    };
+}
+
 canvas.addEventListener('mousedown', (e) => {
     isPressed = true;
+    const pos = getMousePos(e);
     x = e.offsetX;
     y = e.offsetY;
     saveState(); // Save canvas state for undo/redo
@@ -74,8 +106,9 @@ canvas.addEventListener('mousedown', (e) => {
 
 canvas.addEventListener('mousemove', (e) => {
     if (isPressed) {
-        const x2 = e.offsetX;
-        const y2 = e.offsetY;
+        const pos = getMousePos(e);
+        const x2 = pos.x;
+        const y2 = pos.y;
         drawCircle(x2, y2);
         drawLine(x, y, x2, y2);
         x = x2;
@@ -94,6 +127,7 @@ canvas.addEventListener('touchstart', (e) => {
     e.preventDefault();
     isPressed = true;
     const touch = e.touches[0];
+    const pos = getTouchPos(touch);
     x = touch.clientX - canvas.offsetLeft;
     y = touch.clientY - canvas.offsetTop;
     saveState();
@@ -103,8 +137,9 @@ canvas.addEventListener('touchmove', (e) => {
     e.preventDefault();
     if (isPressed) {
         const touch = e.touches[0];
-        const x2 = touch.clientX - canvas.offsetLeft;
-        const y2 = touch.clientY - canvas.offsetTop;
+        const pos = getTouchPos(touch);
+        const x2 = pos.x
+        const y2 = pos.y;
         drawCircle(x2, y2);
         drawLine(x, y, x2, y2);
         x = x2;
